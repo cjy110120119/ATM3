@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 
 public class Operate implements Serializable {
-	private static final byte[] hashmap = null;
 	private String password = null;
 	private String cardid = null;
 	private String education = null;
@@ -32,7 +31,7 @@ public class Operate implements Serializable {
 	HashMap<String, Object> hm = new HashMap<>();
 
 	public void operation() {
-		while(true){
+		while (true) {
 			System.out.println("请选择业务(1.注册,2.销户,3.查询,4.修改)");// 根据输入的数字选择对应的业务
 			String input = sca.next();
 			if (input.equals("1")) {// 判断输入的数,选择业务
@@ -51,7 +50,7 @@ public class Operate implements Serializable {
 				System.out.println("输入错误,重新输入");
 			}
 		}
-		
+
 	}
 
 	public void register() {// 注册
@@ -206,33 +205,33 @@ public class Operate implements Serializable {
 	public void information() {// 查询用户信息
 		File file = new File("User" + File.separator + "user.txt");// 创建File对象,获取文本
 		if (file.equals(null) || file.length() == 0) {// 对象长度为零,说明文本中没有对象
-			HashMap<String,Object> hashmap = new HashMap<>();
+			HashMap<String, Object> hashmap = new HashMap<>();
 			System.out.println("无用户");
 			operation();
 		} else {// 有对象
 			try {
 				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
 				HashMap<String, Object> hm = (HashMap<String, Object>) ois.readObject();// 读取对象
-			    System.out.println(hm.values());// 显示出所有对象信息
+				System.out.println(hm.values());// 显示出所有对象信息
 				ois.close();
-				while(true){
+				while (true) {
 					System.out.println("(输入1.返回菜单   2.返回登录)");
 					String str = sca.next();
-					if(str.equals("1")){
+					if (str.equals("1")) {
 						operation();
-					}else if(str.equals("2")){
+					} else if (str.equals("2")) {
 						Land land = new Land();
 						land.landWay();
-					}else{
+					} else {
 						System.out.println("输入错误,重新输入:");
 					}
 				}
 			} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		     }
-	    }
-    }
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 
 	public void updateuser() {// 修改用户信息
 
@@ -247,7 +246,7 @@ public class Operate implements Serializable {
 				try {
 					ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
 					HashMap<String, Object> hashmap = (HashMap<String, Object>) ois.readObject();
-
+				    System.out.println(hashmap);
 					Set<String> keyset = hashmap.keySet();// 获取集合中的键
 					boolean bln = false;// 先定义一个Boolean 的变量为false
 					for (String key : keyset) {// 遍历键//将键赋给userkey
@@ -280,20 +279,18 @@ public class Operate implements Serializable {
 
 	}
 
-	public void update(User temp, File file, HashMap<String, Object> hm) {// 将用户信息传进来
+	public void update(User temp, File file, HashMap<String, Object> hashmap) {// 将用户信息传进来
 		while (true) {
-			System.out.println("请选择要修改的属性:(1.密码,2.姓名,3.学历,4.联系地址)");// 判断要改的属性
+			System.out.println("请选择要修改的属性:(1.密码,2.姓名,3.学历,4.联系地址,5.退出)");// 判断要改的属性
 			String input = sca.next();
 			if (input.equals("1")) {
 				System.out.println("请输入新密码(6位数字):");// 改密码
 				String newpassword = sca.next();
 				temp.setPassword(newpassword);// 调用User的set方法
-				break;
 			} else if (input.equals("2")) {
 				System.out.println("请输入修改后的姓名:");// 改开户名
 				String newname = sca.next();
 				temp.setName(newname);// 调用set方法
-				break;
 			} else if (input.equals("3")) {
 				while (true) {
 					System.out.println("请输入修改后的学历(1.小学,2.中学,3.大学,4.其他):");// 修改学历
@@ -318,21 +315,28 @@ public class Operate implements Serializable {
 						System.out.println("输入错误,只能是1-4,重新输入");
 					}
 				}
-			} else if (input.equals("5")) {
+			} else if (input.equals("4")) {
 				System.out.println("请输入修改后的地址:");// 修改地址
 				String newaddress = sca.next();
 				temp.setAddress(newaddress);
-				break;
-			} else {
+			}else if(input.equals("5")){
+				Land land = new Land();
+				land.landWay();
+			}
+			else {
 				System.out.println("输入错误,重新输入");
 			}
+			
 			System.out.println("1.确认     2.继续修改");
 			String str = sca.next();
 			if (str.equals("1")) {
+				String account = temp.getAccount();
+				String userCard = temp.getCardid();
+				String accountCard = account + userCard;
+				hashmap.put(accountCard, temp);
 				try {
 					ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
 					oos.writeObject(hashmap);
-					break;
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -350,8 +354,8 @@ public class Operate implements Serializable {
 
 	public void write(HashMap<String, Object> hm) {// 用于注册后统一写入,传入注册时输入的账号和身份证号,还有注册时生成的用户
 		File file = new File("User" + File.separator + "user.txt");// 创建File对象,获取文本
-		if(file == null || file.equals("")||file.length() == 0){
-			HashMap<String,Object> hashmap = new HashMap<>();
+		if (file == null || file.equals("") || file.length() == 0) {
+			HashMap<String, Object> hashmap = new HashMap<>();
 			ObjectOutputStream oos;
 			try {
 				oos = new ObjectOutputStream(new FileOutputStream(file));
@@ -362,17 +366,16 @@ public class Operate implements Serializable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}else{
+		} else {
 			try {
 				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
-			  
-			    HashMap<String,Object> hashmap = (HashMap<String, Object>) ois.readObject();
+				HashMap<String, Object> hashmap = (HashMap<String, Object>) ois.readObject();
 				ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
 				hashmap.putAll(hm);
 				oos.writeObject(hashmap);
 				ois.close();
 				oos.close();
-			} catch ( IOException | ClassNotFoundException e) {
+			} catch (IOException | ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

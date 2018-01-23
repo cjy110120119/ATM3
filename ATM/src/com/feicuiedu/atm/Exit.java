@@ -1,8 +1,8 @@
 package com.feicuiedu.atm;
 
 public class Exit {
-	public void returnmenu(){
+	public void returnmenu() {
 		Land land = new Land();
-		land.landWay();//直接返回登录界面
+		land.landWay();// 直接返回登录界面
 	}
 }
